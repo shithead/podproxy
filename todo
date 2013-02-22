@@ -1,0 +1,6 @@
+- episode deletes/cleanup
+- on startup, delete files that are unrecognized from datadir
+
+
+advanced:
+- time shifting

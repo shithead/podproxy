@@ -1,0 +1,41 @@
+// Imports
+
+@import compass
+@import compass/reset
+@import susy
+@import grid
+@import color
+
+html
+  font-family: Sans-Serif
+  background: $secondary
+  color: $primary
+
+.content
+  +container
+  +susy-grid-background
+h1
+  +adjust-font-size-to(32px)
+  font-weight: bold
+  +leader(.25)
+  color: $tertiary
+
+div[role="main"]
+  +trailer
+
+form
+  +clearfix
+
+input
+  font-weight: bold
+  text-transform: uppercase
+  border: none
+  +adjust-font-size-to(16px)
+  padding: rhythm(.5, 16px)
+  margin: 0
+
+input[type="text"], input[type="url"]
+  background: white
+
+input[type="submit"], button, .button
+  background: $quadrary

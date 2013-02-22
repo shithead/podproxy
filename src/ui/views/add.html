@@ -1,0 +1,18 @@
+{{>header.html}}
+
+			<article class="alert neutral">
+				<h2>Add A Feed</h2>
+				<p>
+					{{add-new}}Enter the feed's url to add it to your queue.{{/add-new}}
+					{{#added}}Your URL was added just fine. The URL is: {{url}}{{/added}}
+					{{^added}}Your shit wasn't added. WTF?{{/added}}
+				</p>
+			</article>
+
+			<form action="/add" method="post" class="add">
+				<input type="url" name="url" value="" placeholder="Feed URL" />
+				<input type="submit" value="Add" />
+			</form>
+
+{{>footer.html}}
+

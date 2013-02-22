@@ -1,0 +1,31 @@
+{
+  "coffee": {
+    "command": ["coffee", "-wo", "__CWD__/app", "__CWD__/src"],
+    "logOut":  "cof",
+    "logErr":  "cof-ERR",
+    "perform": [
+      {
+        "on":      "starting on line|Parse error",
+        "stop":    true
+      }, {
+        "on":      "/public/",
+        "kill":    {"node": "SIGUSR2"},
+        "stop":    true
+      }, {
+        "on":      "/shared.coffee",
+        "kill":    {"node": "SIGUSR2"},
+        "restart": ["node"],
+        "stop":    true
+      }, {
+        "on":      "",
+        "restart": ["node"]
+      }
+    ]
+  },
+  "node": {
+    "command": ["node", "__CWD__/app/podproxy.js"],
+    "logOut":  "app",
+    "logErr":  "app-ERR",
+    "deps":    ["coffee"]
+  }
+}

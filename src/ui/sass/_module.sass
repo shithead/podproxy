@@ -1,0 +1,37 @@
+form.add
+
+  input[type="url"]
+    +span-columns(5)
+
+  input[type="submit"]
+    +span-columns(2)
+    +omega
+
+/* Alerts
+ * ------------------------------ *
+ * <article class="alert #{type}">
+ *  <h2>Headline</h2>
+ *  <p>Content</p>
+ *</article>
+ */
+.alert
+  +rhythm(1,0,1,1)
+  color: $secondary
+  font-weight: bold
+  background: $quadrary
+  p
+    +pad(1,1)
+h2
+  +rhythm(0,.5,.5,1,20px)
+  padding-left: rhythm(1, 20px)
+  text-transform: uppercase
+  +adjust-font-size-to(20px)
+  color: $secondary
+  .success &
+    background: $success
+  .neutral &
+    background: $neutral
+  .caution &
+    background: $caution
+  .warning &
+    background: $warning

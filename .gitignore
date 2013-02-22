@@ -1,0 +1,11 @@
+src/*.js
+src/coffee/*.js
+public/js
+.sass-cache
+test.*
+app
+db
+data
+ed
+node_modules
+npm-debug.log
