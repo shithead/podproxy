@@ -1,11 +1,12 @@
 url      = require 'url'
 events   = require 'events'
 express  = require 'express'
+bodyParser = require 'body-parser'
 http     = require 'http'
 ioModule = require 'socket.io'
 
 app = express()
-app.use express.bodyParser()
+app.use bodyParser.urlencoded({ extended: false })
 
 # zomg FIXME
 # app.use express.static __dirname + '/../../public'
