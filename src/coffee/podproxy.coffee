@@ -172,9 +172,10 @@ loadConfig = (data = {}) ->
         cl ''
         process.exit()
       else
-        unless a is 'node' or a is 'coffee' or a.match /\.(js|coffee)$/
+        unless a.match /(node|\.js|coffee)$/
           die "What?: #{a}"
 
+  #if !a.match /node$/ or !a.match /coffee/ or !a.match /\.(js|coffee)$/
   # these are logical implications that we'll just go ahead and clearly enforce
   if config.guestsCanManage then config.guestsCanRead   = true
   if  !config.guestsCanRead then config.guestsCanManage = false
