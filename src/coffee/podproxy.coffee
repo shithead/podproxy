@@ -82,6 +82,13 @@ server.setEpisodeManager em
 
 # Load the jsons, start application
 bootstrap = (cb) ->
+  fs.exists state.dbDir, (exists) ->
+    unless exists
+      log.log "#{state.dbDir}: missing. starting new one.."
+      fs.mkdir state.dbDir, (err) ->
+        if err
+          log.log "#{state.dbDir}: creating failed."
+
   fs.readFile state.configFile, (err, data) ->
     if err
       log.log "#{state.configFile}: #{err}. starting new one.."
