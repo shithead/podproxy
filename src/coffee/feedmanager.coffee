@@ -98,16 +98,19 @@ refreshFeed = (feed, cb = null) ->
     log.warn "Feed fetch already in progress. Not doubling job."
     return
   jobs[feed.url] = downloading: true
-  reqObj = uri: feed.url
+  reqObj = request feed.url
   if feed.etag and feed.lastModified then reqObj.headers =
     'If-Modified-Since': feed.lastModified
     'If-None-Match':     feed.etag
-  request reqObj, (error, response, body) ->
-    if error or response.statusCode != 200
-      delete jobs[feed.url]
-      feed.failReason = "Feed refresh failed. #{error} on #{new Date}"
-      log.warn "Feed refresh FAILED: #{feed.url}: #{error}"
-      cb() if cb
+  reqObj.on 'error', (error) ->
+    delete jobs[feed.url]
+    feed.failReason = "Feed refresh failed. #{error} on #{new Date}"
+    log.warn "Feed refresh FAILED: #{feed.url}: #{error}"
+  reqObj.on 'response', (res) ->
+    stream = this; # `this` is `req`, which is a stream 
+ 
+    if res.statusCode != 200
+      this.emit 'error', new Error 'Bad status code'
     else
       parser = getParser ->
         feed.done()
@@ -116,8 +119,9 @@ refreshFeed = (feed, cb = null) ->
         cb() if cb
       parser.newItemCount = 0
       parser.feed         = feed
-      parser.parseString body
+      stream.pipe parser
 
+      
 getRSS = (f) ->
   feed = new RSS
     title:       f.title
@@ -147,20 +151,20 @@ getCompositeRSS = ->  # Get a feed composed of the latest X episodes from all (r
 
 getParser = (cbOnParseEnd = null) ->
   parser = new FeedParser
-  parser.on 'article', (article) ->
-    if parser.feed.add article, true
-      parser.newItemCount++
   parser.on 'error', (e) ->
     log.warn "Failed to parse #{parser.feed.url}: #{e}"
     parser.feed.failReason = e
     parser.feed.failDate   = new Date
+    log.log parser.feed
   parser.on 'meta', (meta) ->
+    #console.log meta
     parser.feed.title       = meta.title
     parser.feed.slug        = slugify(meta.title) unless parser.feed.slug
     parser.feed.description = meta.description
     parser.feed.link        = meta.link
     parser.feed.image_url   = meta.image?.url
     parser.feed.image_title = meta.image?.title
+    log.log parser.feed
   parser.on 'end', ->
     log.log "Parsed #{parser.newItemCount} new articles from #{parser.feed.title}"
     parser.feed.failReason  = null
@@ -168,6 +172,11 @@ getParser = (cbOnParseEnd = null) ->
     delete jobs[parser.feed.url]
     log.log 'Refreshed Feeds.'
     cbOnParseEnd() if cbOnParseEnd
+  parser.on 'readable', ->
+    stream = this
+    while item = stream.read()
+      if parser.feed.add item, true
+        parser.newItemCount++
   parser
 
 getFeedByUrl = (u) ->

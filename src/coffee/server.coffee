@@ -41,7 +41,7 @@ app.get '/', (req, res) ->
   if feedUrl = url_parts.query.feed or url_parts.query.f
     return maybeAddButGetFeed feedUrl, res
 
-  res.sendfile "#{state.pubroot}/index.html"
+  res.sendFile "#{state.pubroot}/index.html"
 
 # serve up a composite feed of all subscribed feeds
 app.get '/composite', (req, res) ->
